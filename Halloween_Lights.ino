@@ -16,6 +16,8 @@
 #include <avr/sleep.h>
 #include <avr/wdt.h>
 
+#define wdt_enable_interrupt() do { WDTCR |= _BV(WDIE); } while (0)
+
 uint8_t countdown = 0;
 // current enabled LED
 int8_t current = -1;
@@ -45,7 +47,7 @@ void setup_io()
 
 ISR(WDT_vect)
 {
-  WDTCR |= _BV(WDIE);
+  wdt_enable_interrupt();
 }
 
 void wait()
@@ -64,7 +66,7 @@ void setup_wait()
 {
   power_all_disable();
   wdt_enable(WDTO_250MS);
-  WDTCR |= _BV(WDIE);
+  wdt_enable_interrupt();
   set_sleep_mode(SLEEP_MODE_PWR_DOWN);
 }
 
