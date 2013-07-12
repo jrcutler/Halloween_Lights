@@ -1,13 +1,31 @@
+/*
+ * A battery-powered "blinking" lights toy.
+ *
+ * ATtiny85 connections:
+ *
+ *         +-\/-+
+ *   Vcc  1|o   |8  Vcc
+ *    NC  2|    |7  LED---/\/\/---GND
+ *    NC  3|    |6  LED---/\/\/---GND
+ *   GND  4|    |5  LED---/\/\/---GND
+ *         +----+
+ *
+ */
 #include <avr/interrupt.h>
 #include <avr/power.h>
 #include <avr/sleep.h>
 #include <avr/wdt.h>
 
 uint8_t countdown = 0;
+// current enabled LED
 int8_t current = -1;
+// minimum on time
 const uint8_t min_time = 6;
+// maximum on time
 const uint8_t max_time = 28;
+// number of LEDs
 const uint8_t leds = 3;
+// number of "dead" slots (no LED enabled)
 const uint8_t dead = 1;
 
 
@@ -55,7 +73,7 @@ void update_leds(void)
 {
   int8_t led = random(leds + dead) - dead;
 
-  // turn off current
+  // turn off current LED
   if (current >= 0)
   {
     digitalWrite(current, LOW);
